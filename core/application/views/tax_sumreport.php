@@ -329,7 +329,6 @@ if(!empty($getdetailpay_sumreport_receive_old)){
 }
 
 
-
 // else {
 //     // header("Location: " . base_url('tax'));
 //     // exit;

@@ -276,7 +276,7 @@ class Public_model extends CI_Model
             $db2->where("taxpay.docdate BETWEEN '$date_start' AND '$date_end' AND taxpay.p_key !=''");
             $query = $db2->get('vchmas');
         }
-        print_r($db2);
+        // print_r($db2);
         // exit();
         return $query->result_array();
 
@@ -298,6 +298,20 @@ class Public_model extends CI_Model
         $query = $db2->get('db_acc.gl_tax_adv');
         
         // print_r($db2);
+        return $query->result_array();
+        
+    }
+
+    public function gettaxreceiveYear($paytaxno, $date_start, $date_end)
+    {
+        $db2 = $this->load->database("db_acc", true);
+        $db2->select("TA_TAX_DT,TA_TAX_ID,TA_TAX_NM,TA_TAX_NO,DATE_FORMAT(TA_TAX_DT, '%Y') as dateformat");
+        $db2->like('TA_TAX_ID', $paytaxno);
+        $db2->where("TA_TAX_DT BETWEEN '$date_start' AND '$date_end' AND TA_STAT != 'X' AND mid(TA_TAX_NO,1,2) = 'WT' AND TA_TAX_TYPE = 'ภ.ง.ด.1'");
+        $db2->order_by('TA_TAX_DT', 'DESC');
+        $query = $db2->get('db_acc.gl_tax_adv');
+        
+        print_r($db2);
         return $query->result_array();
         
     }
@@ -341,6 +355,31 @@ class Public_model extends CI_Model
             $query = $db2->get('gl_tax_adv');
 
             // print_r($query);
+            return $query->result_array();
+        }
+
+    }
+
+    public function gettaxreceive_report_year($taxid,$date_start,$date_end)
+    {
+        if (!empty($taxid)) {
+            $db2 = $this->load->database("db_acc", true);
+            $db2->select('TA_TAX_NO,
+            TA_TAX_NM,
+            TA_TAX_ADDR,
+            TA_TAX_ID,
+            TA_TAX_DESC,
+            SUM(TA_TAX_VALUE) as TA_TAX_VALUE,
+            TA_TAX_DESC,
+            SUM(TA_TAX_AMT) as TA_TAX_AMT,
+            TA_TAX_TYPE
+            ,DATE_FORMAT(TA_TAX_DT, "%Y") as dateformat');
+            $db2->where(array('TA_TAX_ID' => $taxid));
+            $db2->where("TA_TAX_DT BETWEEN '$date_start' AND '$date_end' AND mid(TA_TAX_NO,1,2) = 'WT' AND TA_TAX_TYPE = 'ภ.ง.ด.1'");
+            $query = $db2->get('gl_tax_adv');
+
+            // print_r($db2);
+            // exit();
             return $query->result_array();
         }
 

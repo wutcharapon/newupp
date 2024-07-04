@@ -71,7 +71,7 @@ $paytaxno_search = $this->session->userdata("paytaxno");
                                     <p class="red-text" style="font-size: 16px;">กรุณากรอกเลขที่ผู้เสียภาษีรูปแบบ
                                         xxxxxxxxxxxxx</p>
                                 </div>
-                               
+
                                 <div class="form-group col-md-5 offset-md-4 my-3 ">
                                     <label style="font-size: 15px;">วันออกหนังสือรับรองการหักภาษี ณ ที่จ่าย
                                         (วันที่รับเงิน)</label>
@@ -92,7 +92,47 @@ $paytaxno_search = $this->session->userdata("paytaxno");
 
                             <?php if (!empty($paytaxno) || !empty($paytaxrecive)) {?>
                             <div class="table-responsive">
+                                <?php if($paytaxrecive_year) {?>
+                                <div class="form-group col-md-5 offset-md-5 my-3">
+                                    <label><b>สรุปรายละเอียด - รายปี <u>ภ.ง.ด.1ก</u></b></label>
+                                </div>
                                 <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ประจำปี</th>
+                                            <th scope="col">ตั้งแต่วันที่</th>
+                                            <th scope="col">เลขที่ผู้เสียภาษี</th>
+                                            <th scope="col">ชื่อผู้เสียภาษี</th>
+                                            <th scope="col">ประเภท</th>
+                                            <th scope="col">พิมพ์</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <?php foreach ($paytaxrecive_year as $row => $item):                                           
+                                               $taxid = $item['TA_TAX_ID'];
+                                                $name = $item["TA_TAX_NM"];
+                                                $date = $item["dateformat"];?>
+                                            <?php endforeach;?>
+                                            <td><b><?=$date?></b></td>
+                                            <td><?=$date_start?> ถึง <?=$date_end?></td>
+                                            <td><?php echo $taxid; ?></td>
+                                            <td><?php echo $name; ?>
+                                            <td style="color: green;"><?php echo "การเงินรับ" ?></td>
+                                            <td> <a href="#" class="send-sumreportYear zoom-hover"
+                                                    data-date_start="<?=$date_start?>" data-date_end="<?=$date_end?>"
+                                                    data-paytaxno="<?=$taxid?>">
+                                                    <img src="<?=base_url('assets/img/sumyaerpdf.png')?>"
+                                                        width="30"></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="form-group col-md-5 offset-md-5 my-3">
+                                    <label><b>รายละเอียด - แยกย่อย </b></label>
+                                </div>
+                                <?php } ?>
+                                <table class="table table-hover  ">
                                     <thead>
                                         <tr>
                                             <th scope="col">ลำดับ</th>
@@ -122,18 +162,17 @@ $paytaxno_search = $this->session->userdata("paytaxno");
                                             }  ?></td>
                                             <td><?php echo $item1["paytitle"] . " " . $item1["payname"] . " " . $item1["paysurname"]; ?>
                                             </td>
-                                            <td style="color: red;"><?php echo "การเงินจ่าย" ?></td>
-                                            <td> <a href="#" class="check-tax" data-taxkey="<?=$item1['taxkey']?>"
-                                                    data-vchkey="<?=$item1['vchkey']?>"
-                                                    data-paytaxno="<?=$paytax?>"
-                                                    data-title="<?=$item1['title']?>"
-                                                    data-name="<?=$item1['name']?>"
+                                            <td style="color: red;"><?php echo "การเงินจ่าย" ?></td>                                   
+                                            <td> <a href="#" class="check-tax zoom-hover" data-taxkey="<?=$item1['taxkey']?>"
+                                                    data-vchkey="<?=$item1['vchkey']?>" data-paytaxno="<?=$paytax?>"
+                                                    data-title="<?=$item1['title']?>" data-name="<?=$item1['name']?>"
                                                     data-surname="<?=$item1['surname']?>"
                                                     data-paydate="<?=$item1['paydate']?>"
                                                     data-bankref="<?=$item1['bankref']?>">
-                                                    <img src="<?=base_url('assets/img/pdf.svg')?>" width="30"></a>
+                                                    <img  src="<?=base_url('assets/img/pdf.svg')?>" width="30" ></a>
                                             </td>
-                                        </tr>                                       
+                                                                                 
+                                        </tr>
                                         <?php endforeach;?>
                                         <?php } ?>
                                         <?php if(!empty($paytaxrecive_old)) {?>
@@ -145,30 +184,31 @@ $paytaxno_search = $this->session->userdata("paytaxno");
                                             <td><?php echo $item["TA_TAX_NM"]; ?>
                                             </td>
                                             <td style="color: green;"><?php echo "การเงินรับ" ?></td>
-                                            <td> <a href="#" class="check-tax-in" data-taxid="<?=$item['TA_TAX_ID']?>"
+                                            <td> <a href="#" class="check-tax-in zoom-hover" data-taxid="<?=$item['TA_TAX_ID']?>"
                                                     data-docno="<?=$item['TA_TAX_NO']?>">
                                                     <img src="<?=base_url('assets/img/pdf.svg')?>" width="30"></a>
                                             </td>
 
                                         </tr>
-                                        <?php endforeach;?>   
+                                        <?php endforeach;?>
                                         <?php } ?>
                                         <?php if(!empty($paytaxrecive)) {?>
                                         <?php foreach ($paytaxrecive as $row => $item): ?>
                                         <tr>
                                             <td><?php echo $numrow ++; ?></td>
-                                            <td><?php echo date('d/m/Y', strtotime(str_replace('/', '-',  $item['TA_TAX_DT']))); ?></td>
+                                            <td><?php echo date('d/m/Y', strtotime(str_replace('/', '-',  $item['TA_TAX_DT']))); ?>
+                                            </td>
                                             <td><?php echo $item['TA_TAX_ID']; ?></td>
                                             <td><?php echo $item["TA_TAX_NM"]; ?>
                                             </td>
                                             <td style="color: green;"><?php echo "การเงินรับ" ?></td>
-                                            <td> <a href="#" class="check-tax-in" data-taxid="<?=$item['TA_TAX_ID']?>"
+                                            <td> <a href="#" class="check-tax-in zoom-hover" data-taxid="<?=$item['TA_TAX_ID']?>"
                                                     data-docno="<?=$item['TA_TAX_NO']?>">
                                                     <img src="<?=base_url('assets/img/pdf.svg')?>" width="30"></a>
                                             </td>
 
                                         </tr>
-                                        <?php endforeach;?>   
+                                        <?php endforeach;?>
                                         <?php } ?>
                                         <tr>
                                             <td></td>
@@ -190,29 +230,32 @@ $paytaxno_search = $this->session->userdata("paytaxno");
                                                 $taxid = "";
                                                 $name = "";
                                             }
+
+                                            
                                             ?>
                                             <td><?php echo $taxid; ?></td>
                                             <td><?php echo $name; ?>
                                             <td style="color: blue;"><?php echo "รวมรายละเอียด" ?></td>
-                                            <td> <a href="#" class="send-sumreport" 
-                                                 <?php   if(!empty($item1['fullname']) && empty($item['fullname'])){
+                                            <td> <a href="#" class="send-sumreport zoom-hover" <?php   if(!empty($item1['fullname']) && empty($item['fullname'])){
                                                             $fullname = $item1['fullname'];
                                                         }else if(empty($item1['fullname']) && !empty($item['fullname'])){
                                                             $fullname = $item['fullname'];
                                                         }else{
                                                             $fullname = "";
-                                                        } ?>
-                                                    data-fullname="<?=$fullname ?>"
-                                                    data-date_start="<?=$date_start?>"
-                                                    data-date_end="<?=$date_end?>"
-                                                    data-paytaxno="<?=$taxid?>"
-                                                    >
+                                                        } ?> data-fullname="<?=$fullname ?>"
+                                                    data-date_start="<?=$date_start?>" data-date_end="<?=$date_end?>"
+                                                    data-paytaxno="<?=$taxid?>">
                                                     <img src="<?=base_url('assets/img/bluepdf.png')?>" width="30"></a>
                                             </td>
-                                        </tr>                        
-                                      
+                                        </tr>
+
+
+
                                     </tbody>
                                 </table>
+
+
+
                             </div>
                             <?php } else {?>
 
@@ -250,8 +293,10 @@ function validateInput_number(inputElement) {
 // รับคลิกลิงก์ "ตรวจสอบ" และส่งข้อมูลแบบ POST
 document.querySelectorAll('.check-tax').forEach(function(button) {
     button.addEventListener('click', function() {
-        var attributes = ['taxkey','vchkey', 'paytaxno', 'title', 'name', 'surname', 'paydate','bankref'];
-        
+        var attributes = ['taxkey', 'vchkey', 'paytaxno', 'title', 'name', 'surname', 'paydate',
+            'bankref'
+        ];
+
         var form = document.createElement('form');
         form.method = 'post';
         form.target = '_blank';
@@ -273,7 +318,7 @@ document.querySelectorAll('.check-tax').forEach(function(button) {
 document.querySelectorAll('.check-tax-in').forEach(function(button) {
     button.addEventListener('click', function() {
         var attributes = ['taxid', 'docno'];
-        
+
         var form = document.createElement('form');
         form.method = 'post';
         form.target = '_blank';
@@ -294,8 +339,8 @@ document.querySelectorAll('.check-tax-in').forEach(function(button) {
 
 document.querySelectorAll('.send-sumreport').forEach(function(button) {
     button.addEventListener('click', function() {
-        var attributes = ['paytaxno','fullname', 'date_start','date_end'];
-        
+        var attributes = ['paytaxno', 'fullname', 'date_start', 'date_end'];
+
         var form = document.createElement('form');
         form.method = 'post';
         form.target = '_blank';
@@ -314,22 +359,44 @@ document.querySelectorAll('.send-sumreport').forEach(function(button) {
     });
 });
 
+document.querySelectorAll('.send-sumreportYear').forEach(function(button) {
+    button.addEventListener('click', function() {
+        var attributes = ['paytaxno', 'date_start', 'date_end'];
+
+        var form = document.createElement('form');
+        form.method = 'post';
+        form.target = '_blank';
+        form.action = '<?=base_url('tax/sumreportYear')?>';
+
+        attributes.forEach(function(attr) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = attr;
+            input.value = button.getAttribute('data-' + attr);
+            form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+    });
+});
+
 function formatInput(input) {
     var cleanedInput = input.replace(/\D/g, '');
-   
 
-  // เพิ่มเครื่องหมาย "-" หลังตัวแรก
-  cleanedInput = cleanedInput.replace(/(\d)(\d*)/, '$1 - $2');
 
-  // เพิ่มเครื่องหมาย "-" หลังตัวที่ 5
-  cleanedInput = cleanedInput.replace(/(\d{4})(\d*)/, '$1 - $2');
+    // เพิ่มเครื่องหมาย "-" หลังตัวแรก
+    cleanedInput = cleanedInput.replace(/(\d)(\d*)/, '$1 - $2');
 
-  // เพิ่มเครื่องหมาย "-" ก่อนตัวที่ 11
-  cleanedInput = cleanedInput.replace(/(\d{5})(\d{2})(\d*)/, '$1 - $2 - $3');
+    // เพิ่มเครื่องหมาย "-" หลังตัวที่ 5
+    cleanedInput = cleanedInput.replace(/(\d{4})(\d*)/, '$1 - $2');
 
- 
-  // แสดงค่าที่จัดรูปแบบใน input field
-  document.getElementById('numberInput').value = cleanedInput;
+    // เพิ่มเครื่องหมาย "-" ก่อนตัวที่ 11
+    cleanedInput = cleanedInput.replace(/(\d{5})(\d{2})(\d*)/, '$1 - $2 - $3');
+
+
+    // แสดงค่าที่จัดรูปแบบใน input field
+    document.getElementById('numberInput').value = cleanedInput;
 
 }
 </script>

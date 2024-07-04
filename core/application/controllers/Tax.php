@@ -49,8 +49,7 @@ class Tax extends MY_Controller
         $head = array();
         $data['echoerr'] = "";
         if (empty($paytaxno)) {
-            $data['echoerr'] = "กรุณากรอก เลขที่ผู้เสียภาษี";
-
+            $data['echoerr'] = "กรุณากรอก เลขที่ผู้เสียภาษี";         
         } else {
             if (preg_match('/[a-zA-Z\_\.\-ก-๏เแโใไเ#$%^&*()_+!@",?|{}๐เแโใไะาึืุูี๊ฯํะ๕๑๔๒๖๓๘๐]/', $paytaxno)) {
                 $data['echoerr'] = "กรุณากรอก เฉพาะตัวเลขเท่านั้น !";
@@ -74,9 +73,27 @@ class Tax extends MY_Controller
                         $data['dateformat_start'] = $dateformat_start;
                         $data['dateformat_end'] = $dateformat_end;
                        
+                        ////////////////////////////////////////
+                        $startDate = new DateTime($date_start);
+                        $endDate = new DateTime($date_end);
+                        if ($startDate->format('m-d') === '01-01' && $endDate->format('m-d') === '12-31' && $startDate->format('Y') === $endDate->format('Y')) {
+                        // $interval = $startDate->diff($endDate);
+                        // $data['interval'] =  $interval->days; // คำนวณจำนวนวัน
+                        $result = $this->Public_model->gettaxreceiveYear($paytaxno, $date_start, $date_end);
+                            if($result){
+                                $data['paytaxrecive_year'] = $result;
+                            }else{
+                                $data['paytaxrecive_year'] = null;
+                            }
+                        
+                        }else{
+                            $data['paytaxrecive_year'] = null;
+                        }
+                        ////////////////////////////////////////
 
                         $data['paytaxno'] = $this->Public_model->getpaytaxno($paytaxno, $date_start, $date_end);
                         $data['paytaxrecive'] = $this->Public_model->gettaxreceive($paytaxno, $date_start, $date_end);
+                      
                         $data['paytaxrecive_old'] = $this->Public_model->gettaxreceive_old($paytaxno, $dateformat_start, $dateformat_end);
                         // if (strtotime($date_start) <= strtotime('2024-02-29')) {
                         //     if(strtotime($date_start) == strtotime('2024-02-29') && strtotime($date_end) == strtotime('2024-02-29')){
@@ -228,6 +245,40 @@ class Tax extends MY_Controller
          
         
         $this->render('tax_sumreport', [], $data);
+    }
+
+    public function sumreportYear()
+    {
+        // $date_start = $_POST['date_start'] ?? '';
+        // $date_end = $_POST['date_end'] ?? '';
+        // $taxid = $_POST['taxid'] ?? '';
+        // $docno = $_POST['docno'] ?? '';
+       
+        // $fullname = $_POST['fullname'] ? trim($_POST['fullname']) : '';
+        $taxid = $_POST['paytaxno'] ?? '';
+        $date_start = $_POST['date_start'] ?? '';
+        $date_end = $_POST['date_end'] ?? '';
+
+        
+        // $this->session->set_userdata([
+        //     "fullname" => $fullname,
+        //     "date_start_sumrep" => $date_start,
+        //     "date_end_sumrep" => $date_end
+        // ]);
+
+
+
+
+        $data = [
+            'gettaxreceive_report_year' => $this->Public_model->gettaxreceive_report_year($taxid,$date_start,$date_end),
+            'date_start' => $date_start,
+            'date_end' => $date_end
+        ];
+     
+      
+         
+        
+        $this->render('tax_receive_Year', [], $data);
     }
 
     private function date($date)
