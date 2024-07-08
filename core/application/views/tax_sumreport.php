@@ -192,13 +192,31 @@ if(!empty($getdetailpay_sumreport_receive) || !empty($getdetailpay_sumreport_rec
         <th>รวมเงินภาษี</th>
         </tr>
         </thead>';
+
+        $html3 = '<table border="1">
+        <thead>
+        <tr align="center">
+        <th  width="50px;">ลำดับ</th>
+        <th>เลขใบสำคัญ</th>
+         <th>ประเภท</th>
+        <th>เลขที่</th>
+        <th >วันที่</th>
+        <th >ประเภทเงินได้</th>
+        <th>อัตราภาษี %</th>
+        <th>จำนวนเงิน</th>
+        <th>รวมเงินภาษี</th>
+        </tr>
+        </thead>';
     $fullname = "";
     $num = 1;
     $num2 = 1;
+    $num3 = 1;
     $sumamt1 = 0;
     $sumtax1 = 0;
     $sumamt3 = 0;
     $sumtax3 = 0;
+    $sumamt53 = 0;
+    $sumtax53 = 0;
     if(!empty($getdetailpay_sumreport_receive)){
     foreach ($getdetailpay_sumreport_receive as $row) {
         $type = $row['TA_TAX_TYPE'];
@@ -246,6 +264,23 @@ if(!empty($getdetailpay_sumreport_receive) || !empty($getdetailpay_sumreport_rec
               </tr>';
             $num2++;
         }
+
+        if($type == 'ภ.ง.ด.53'){
+            $sumamt53 += $row['TA_TAX_VALUE'];
+            $sumtax53 += $row['TA_TAX_AMT'];
+            $html3 .= '<tr  nobr="true" align="center">
+            <td width="50px;">' . $num3 . '</td>
+            <td>'.$vocno.'</td>
+            <td>'.$type.'</td>
+            <td>'.$docno.'</td>
+            <td>' . $ddate . '</td>
+            <td>' . $des . '</td>
+            <td>' . $rate . '</td>
+            <td>' . number_format($row['TA_TAX_VALUE'], 2) . '</td>
+            <td>' . number_format($row['TA_TAX_AMT'], 2) . '</td>
+              </tr>';
+            $num3++;
+        }
     }
 }
 if(!empty($getdetailpay_sumreport_receive_old)){
@@ -277,33 +312,9 @@ if(!empty($getdetailpay_sumreport_receive_old)){
     }
 }
 
-    $html .= '<tr align="center">
-        <td  width="50px;"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><b>รวมทั้งสิ้น</b></td>
-        <td><b>' . number_format($sumamt3, 2) . '</b></td>
-        <td><b>' . number_format($sumtax3, 2) . '</b></td>
-        </tr>';
 
-        $html2 .= '<tr align="center">
-        <td  width="50px;"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><b>รวมทั้งสิ้น</b></td>
-        <td><b>' . number_format($sumamt1, 2) . '</b></td>
-        <td><b>' . number_format($sumtax1, 2) . '</b></td>
-        </tr>';
     // ปิดตารางหลังจากลูป
-    $html .= '</table>';
-    $html2 .= '</table>';
-
+ 
     $datenow = date("d/m/Y H:i:s");
     $pdf->Cell(269, 5, "", 0, 1, 'L');
     $pdf->Cell(65, 5, "$datenow", 0, '', 'L');
@@ -319,12 +330,52 @@ if(!empty($getdetailpay_sumreport_receive_old)){
 
     // ใช้ WriteHTML แทน WriteHTMLCell
     if($sumamt3 != '0.00' and $sumtax3 != '0.00'){
+        $html .= '<tr align="center">
+        <td  width="50px;"></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><b>รวมทั้งสิ้น</b></td>
+        <td><b>' . number_format($sumamt3, 2) . '</b></td>
+        <td><b>' . number_format($sumtax3, 2) . '</b></td>
+        </tr>';
+        $html .= '</table>';
     $pdf->WriteHTML($html);
     }
 
     if($sumamt1 != '0.00' and $sumtax1 != '0.00'){
+        $html2 .= '<tr align="center">
+        <td  width="50px;"></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><b>รวมทั้งสิ้น</b></td>
+        <td><b>' . number_format($sumamt1, 2) . '</b></td>
+        <td><b>' . number_format($sumtax1, 2) . '</b></td>
+        </tr>';
+        $html2 .= '</table>';
     $pdf->WriteHTML($html2);
     }
+
+    if($sumamt53 != '0.00' and $sumtax53 != '0.00'){
+        $html3 .= '<tr align="center">
+        <td  width="50px;"></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><b>รวมทั้งสิ้น</b></td>
+        <td><b>' . number_format($sumamt53, 2) . '</b></td>
+        <td><b>' . number_format($sumtax53, 2) . '</b></td>
+        </tr>';
+        $html3 .= '</table>';
+        $pdf->WriteHTML($html3);
+        }
 
 }
 
