@@ -276,7 +276,7 @@ class Public_model extends CI_Model
             $db2->where("taxpay.docdate BETWEEN '$date_start' AND '$date_end' AND taxpay.p_key !=''");
             $query = $db2->get('vchmas');
         }
-        // print_r($db2);
+        print_r($db2);
         // exit();
         return $query->result_array();
 

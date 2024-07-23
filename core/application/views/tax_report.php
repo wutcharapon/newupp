@@ -25,6 +25,7 @@ $pdf->SetAutoPageBreak('on', 5);
 if (!empty($paytaxno_report)) {
    
     // print_r($paytaxno_report);
+    // exit();
     foreach ($paytaxno_report as $row) {
         $p_key = $row['p_key'];
         $gettitle = $row['gettitle'];
@@ -555,6 +556,8 @@ if (!empty($paytaxno_report)) {
 }
 }
 if (!empty($getdetailpaytaxno_report)) {
+    // print_r($getdetailpaytaxno_report);
+    // exit();
     $pdf->SetTopMargin(5);
     // $pdf->deletePage(1);
     $pdf->AddPage('L');
