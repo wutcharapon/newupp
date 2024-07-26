@@ -664,14 +664,14 @@ class Public_model extends CI_Model
 
         public function search_polno($polno,$idcard){
 
-            $db2 = $this->load->database("1210", true);
+            $db2 = $this->load->database("1211", true);
             $db2->select("DATE_FORMAT(strdate, '%d-%m-%Y') as strdate,DATE_FORMAT(enddate, '%d-%m-%Y') as enddate ,
             CONCAT(DATE_FORMAT(cntdate, '%d-%m-%Y'), ' ', DATE_FORMAT(entdate, '%h:%i:%s')) AS date_format,polno");
             $db2->where("enddate >= CURDATE()
             AND polno = '$polno'
             AND MID(idcard, 8, 6) = '$idcard'
-            AND sts = '1' ");
-            $query = $db2->get('booking');
+            AND sts = '1' AND void != 'Y'");
+            $query = $db2->get('polmas_trans');
             // print_r($db2);
             return $query->result_array();
         }

@@ -116,13 +116,12 @@ $db['1202'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
-
-$db['1210'] = array(
+$db['1211'] = array(
 	'dsn'	=> '',
-	'hostname' => '192.6.1.202',
-	'username' => 'clm_webapp', 
-	'password' => 'appupp2012',
-	'database' => 'compulsory',
+	'hostname' => '192.6.1.211',
+	'username' => 'chkpolicy', 
+	'password' => 'Ai*5FPer',
+	'database' => 'CPLOnline',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -138,6 +137,27 @@ $db['1210'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+// $db['1210'] = array(
+// 	'dsn'	=> '',
+// 	'hostname' => '192.6.1.202',
+// 	'username' => 'clm_webapp', 
+// 	'password' => 'appupp2012',
+// 	'database' => 'compulsory',
+// 	'dbdriver' => 'mysqli',
+// 	'dbprefix' => '',
+// 	'pconnect' => FALSE,
+// 	'db_debug' => (ENVIRONMENT !== 'production'),
+// 	'cache_on' => FALSE,
+// 	'cachedir' => '',
+// 	'char_set' => 'utf8',
+// 	'dbcollat' => 'utf8_general_ci',
+// 	'swap_pre' => '',
+// 	'encrypt' => FALSE,
+// 	'compress' => FALSE,
+// 	'stricton' => FALSE,
+// 	'failover' => array(),
+// 	'save_queries' => TRUE
+// );
 
 $db['db_acc'] = array(
 	'dsn'	=> '',
