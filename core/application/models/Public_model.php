@@ -666,7 +666,7 @@ class Public_model extends CI_Model
 
             $db2 = $this->load->database("1211", true);
             $db2->select("DATE_FORMAT(strdate, '%d-%m-%Y') as strdate,DATE_FORMAT(enddate, '%d-%m-%Y') as enddate ,
-            CONCAT(DATE_FORMAT(cntdate, '%d-%m-%Y'), ' ', DATE_FORMAT(entdate, '%h:%i:%s')) AS date_format,polno");
+            CONCAT(DATE_FORMAT(cntdate, '%d-%m-%Y'), ' ', DATE_FORMAT(entdate, '%H:%i:%s')) AS date_format,polno");
             $db2->where("enddate >= CURDATE()
             AND polno = '$polno'
             AND MID(idcard, 8, 6) = '$idcard'
