@@ -27,7 +27,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
 
 			<div class="col-12 mb-2">
-				<?php if(isset($article['image'])) { ?>
+				<?php if(isset($article['image'])) {  ?>
+					
 				<div class="col-md-8 offset-md-2 offset-sm-0 mb-3 mb-md-4">
 					<div data-cover="<?=base_url('uploads/post/'.$article['image'])?>" data-xs-height="150px" data-sm-height="200px" data-md-height="175px" data-lg-height="225px" data-xl-height="400px"></div>
 				</div>

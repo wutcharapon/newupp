@@ -32,17 +32,6 @@ if (!empty($getdetailpay_sumreport)) {
    
     $separated_results = [];
     foreach ($getdetailpay_sumreport as $row) {
-        // $paytaxno = $row['paytaxno'];
-        // $paydate = $row['paydate'];
-        // $title = $row['title'];
-        // $name = $row['name'];
-        // $surname = $row['surname'];
-        // $bankreg = $row['bankref'];
-        // $paydate = datethai($row['paydate']);
-        // $sumvat += $row['vat'];
-        // $sumdabitall += $row['dabitall'];
-        // $sumtaxpay += $row['taxpay'];
-        // $sumchqtotal += $row['chqtotal'];
         $psnno = $row['psnno'];
 
          // ถ้าหมวดหมู่ยังไม่มีอยู่ในอาร์เรย์ผลลัพธ์ ให้สร้างอาร์เรย์ใหม่
@@ -162,51 +151,10 @@ if(!empty($getdetailpay_sumreport_receive) || !empty($getdetailpay_sumreport_rec
     $pdf->AddPage('L');
     // $pdf->SetHeaderMargin(0);
     // $pdf->SetTopMargin(0);
-    
-    $html = '<table border="1">
-        <thead>
-        <tr align="center">
-        <th  width="50px;">ลำดับ</th>
-        <th>เลขใบสำคัญ</th>
-        <th>ประเภท</th>
-        <th>เลขที่</th>
-        <th >วันที่</th>
-        <th >ประเภทเงินได้</th>
-        <th>อัตราภาษี %</th>
-        <th>จำนวนเงิน</th>
-        <th>รวมเงินภาษี</th>
-        </tr>
-        </thead>';
-     
-        $html2 = '<table border="1">
-        <thead>
-        <tr align="center">
-        <th  width="50px;">ลำดับ</th>
-        <th>เลขใบสำคัญ</th>
-         <th>ประเภท</th>
-        <th>เลขที่</th>
-        <th >วันที่</th>
-        <th >ประเภทเงินได้</th>
-        <th>อัตราภาษี %</th>
-        <th>จำนวนเงิน</th>
-        <th>รวมเงินภาษี</th>
-        </tr>
-        </thead>';
+    $html = getTableHeader();
+    $html2 = getTableHeader();
+    $html3 = getTableHeader();
 
-        $html3 = '<table border="1">
-        <thead>
-        <tr align="center">
-        <th  width="50px;">ลำดับ</th>
-        <th>เลขใบสำคัญ</th>
-         <th>ประเภท</th>
-        <th>เลขที่</th>
-        <th >วันที่</th>
-        <th >ประเภทเงินได้</th>
-        <th>อัตราภาษี %</th>
-        <th>จำนวนเงิน</th>
-        <th>รวมเงินภาษี</th>
-        </tr>
-        </thead>';
     $fullname = "";
     $num = 1;
     $num2 = 1;
@@ -230,57 +178,29 @@ if(!empty($getdetailpay_sumreport_receive) || !empty($getdetailpay_sumreport_rec
         $amt = $row['TA_TAX_AMT'];
         $tax = $row['TA_TAX_VALUE'];
        
-      
-        if($type == 'ภ.ง.ด.3'){
-            $sumamt3 += $row['TA_TAX_VALUE'];
-            $sumtax3 += $row['TA_TAX_AMT'];
-        $html .= '<tr  nobr="true" align="center">
-        <td width="50px;">' . $num . '</td>
-        <td>'.$vocno.'</td>
-        <td>'.$type.'</td>
-        <td>'.$docno.'</td>
-        <td>' . $ddate . '</td>
-        <td>' . $des . '</td>
-        <td>' . $rate . '</td>
-        <td>' . number_format($row['TA_TAX_VALUE'], 2) . '</td>
-        <td>' . number_format($row['TA_TAX_AMT'], 2) . '</td>
-          </tr>';
-        $num++;
-        }
-        
-        if($type == 'ภ.ง.ด.1'){
-            $sumamt1 += $row['TA_TAX_VALUE'];
-            $sumtax1 += $row['TA_TAX_AMT'];
-            $html2 .= '<tr  nobr="true" align="center">
-            <td width="50px;">' . $num2 . '</td>
-            <td>'.$vocno.'</td>
-            <td>'.$type.'</td>
-            <td>'.$docno.'</td>
-            <td>' . $ddate . '</td>
-            <td>' . $des . '</td>
-            <td>' . $rate . '</td>
-            <td>' . number_format($row['TA_TAX_VALUE'], 2) . '</td>
-            <td>' . number_format($row['TA_TAX_AMT'], 2) . '</td>
-              </tr>';
-            $num2++;
-        }
+        switch($type){
+            case 'ภ.ง.ด.3':
+                $sumamt3 += $row['TA_TAX_VALUE'];      
+                $sumtax3 += $row['TA_TAX_AMT'];        
+                $html .= getTableRow($num, $vocno, $type, $docno, $ddate, $des, $rate, $row['TA_TAX_VALUE'], $row['TA_TAX_AMT']);        
+                $num++;        
+            break;
 
-        if($type == 'ภ.ง.ด.53'){
-            $sumamt53 += $row['TA_TAX_VALUE'];
-            $sumtax53 += $row['TA_TAX_AMT'];
-            $html3 .= '<tr  nobr="true" align="center">
-            <td width="50px;">' . $num3 . '</td>
-            <td>'.$vocno.'</td>
-            <td>'.$type.'</td>
-            <td>'.$docno.'</td>
-            <td>' . $ddate . '</td>
-            <td>' . $des . '</td>
-            <td>' . $rate . '</td>
-            <td>' . number_format($row['TA_TAX_VALUE'], 2) . '</td>
-            <td>' . number_format($row['TA_TAX_AMT'], 2) . '</td>
-              </tr>';
-            $num3++;
+            case 'ภ.ง.ด.1':
+                $sumamt1 += $row['TA_TAX_VALUE'];        
+                $sumtax1 += $row['TA_TAX_AMT'];         
+                $html2 .= getTableRow($num2, $vocno, $type, $docno, $ddate, $des, $rate, $row['TA_TAX_VALUE'], $row['TA_TAX_AMT']);       
+                $num2++;         
+            break;
+
+            case 'ภ.ง.ด.53':
+                $sumamt53 += $row['TA_TAX_VALUE'];         
+                $sumtax53 += $row['TA_TAX_AMT'];       
+                $html3 .= getTableRow($num3, $vocno, $type, $docno, $ddate, $des, $rate, $row['TA_TAX_VALUE'], $row['TA_TAX_AMT']);
+                $num3++;         
+            break;
         }
+      
     }
 }
 if(!empty($getdetailpay_sumreport_receive_old)){
@@ -328,54 +248,10 @@ if(!empty($getdetailpay_sumreport_receive_old)){
     $pdf->Cell(65, 6, "", 0, '0', 'L');
     $pdf->Cell(130, 6, "สั่งจ่าย $fullname ณ วันที่ $date_start ถึง $date_end", 0, '1', 'C');
 
-    // ใช้ WriteHTML แทน WriteHTMLCell
-    if($sumamt3 != '0.00' and $sumtax3 != '0.00'){
-        $html .= '<tr align="center">
-        <td  width="50px;"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><b>รวมทั้งสิ้น</b></td>
-        <td><b>' . number_format($sumamt3, 2) . '</b></td>
-        <td><b>' . number_format($sumtax3, 2) . '</b></td>
-        </tr>';
-        $html .= '</table>';
-    $pdf->WriteHTML($html);
-    }
-
-    if($sumamt1 != '0.00' and $sumtax1 != '0.00'){
-        $html2 .= '<tr align="center">
-        <td  width="50px;"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><b>รวมทั้งสิ้น</b></td>
-        <td><b>' . number_format($sumamt1, 2) . '</b></td>
-        <td><b>' . number_format($sumtax1, 2) . '</b></td>
-        </tr>';
-        $html2 .= '</table>';
-    $pdf->WriteHTML($html2);
-    }
-
-    if($sumamt53 != '0.00' and $sumtax53 != '0.00'){
-        $html3 .= '<tr align="center">
-        <td  width="50px;"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><b>รวมทั้งสิ้น</b></td>
-        <td><b>' . number_format($sumamt53, 2) . '</b></td>
-        <td><b>' . number_format($sumtax53, 2) . '</b></td>
-        </tr>';
-        $html3 .= '</table>';
-        $pdf->WriteHTML($html3);
-        }
+ 
+    genfooter($pdf,$html,$sumamt3,$sumtax3);
+    genfooter($pdf,$html2,$sumamt1,$sumtax1);
+    genfooter($pdf,$html3,$sumamt53,$sumtax53);
 
 }
 
@@ -409,35 +285,55 @@ function datethai($date)
     return $thaiDate;
 }
 
-// function settext($servpay, $rentpay, $etc1str){
-//         $text = array();
+function getTableHeader() {
 
-//         if($servpay != 0){
-//             $servtaxt = 'ค่าบริการ';
-//             $text[] = $servtaxt;
-//         }
+    return '<table border="1"> 
+      <thead> 
+        <tr align="center">
+          <th width="50px;">ลำดับ</th>
+          <th>เลขใบสำคัญ</th> 
+          <th>ประเภท</th>
+          <th>เลขที่</th>
+          <th>วันที่</th>
+          <th>ประเภทเงินได้</th>
+          <th>อัตราภาษี %</th>
+          <th>จำนวนเงิน</th>
+          <th>รวมเงินภาษี</th> 
+        </tr>
+      </thead>';
+  
+  }
 
-//         if($rentpay != 0){
-//             $renttaxt = 'ค่าเช่า';
-//             $text[] = $renttaxt;
-//         }
+function genfooter($pdf,$html,$s1,$s2){
+    if($s1 != '0.00' and $s2 != '0.00'){
+        $html .= '<tr align="center">
+        <td  width="50px;"></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><b>รวมทั้งสิ้น</b></td>
+        <td><b>' . number_format($s1, 2) . '</b></td>
+        <td><b>' . number_format($s2, 2) . '</b></td>
+        </tr>';
+        $html .= '</table>';
+    $pdf->WriteHTML($html);
+    }
+}
 
-//         // if($etc1pay != 0){
-//         //         $etc1taxt = 'ค่าขนส่ง';
-//         //         $text[] = $etc1taxt;
-//         // }
-//         if($etc1str == 'ค่าแรง' || $etc1str == 'ค่าขนส่ง' || $etc1str == 'ค่าบริการ' ||
-//         $etc1str == 'ค่าเช่า' || $etc1str == 'ค่าเบี้ยประกันภัย' || $etc1str == 'ค่ารักษาพยาบาล' || $etc1str == 'ค่าเบี้ยประกันภัย ฆย 119 กท'
-//         || $etc1str == 'ค่าบริการการตรวจสอบ' || $etc1str == 'ค่าบริการ,ค่าขนส่ง'){
-//         $text[] = $etc1str;
-//         }
+function getTableRow($num, $vocno, $type, $docno, $ddate, $des, $rate, $taxValue, $taxAmt) {
 
-//         if(!empty($text)){
-//              $unique_text = array_unique($text);
-//             $result = implode(', ', $unique_text);
-//             return $result;
-//         }
-//         else{
-//             return '';
-//         }
-//     }
+    return '<tr nobr="true" align="center">  
+      <td width="50px;">' . $num . '</td>
+      <td>' . $vocno . '</td> 
+      <td>' . $type . '</td>
+      <td>' . $docno . '</td>
+      <td>' . $ddate . '</td>
+      <td>' . $des . '</td>
+      <td>' . $rate . '</td>  
+      <td>' . number_format($taxValue, 2) . '</td>
+      <td>' . number_format($taxAmt, 2) . '</td>
+    </tr>';
+  
+  }

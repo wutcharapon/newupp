@@ -276,7 +276,7 @@ class Public_model extends CI_Model
             $db2->where("taxpay.docdate BETWEEN '$date_start' AND '$date_end' AND taxpay.p_key !=''");
             $query = $db2->get('vchmas');
         }
-        print_r($db2);
+        // print_r($db2);
         // exit();
         return $query->result_array();
 
@@ -293,11 +293,13 @@ class Public_model extends CI_Model
         $db2 = $this->load->database("db_acc", true);
         $db2->select("TA_TAX_DT,TA_TAX_ID,TA_TAX_NM,TA_TAX_NO");
         $db2->like('TA_TAX_ID', $paytaxno);
-        $db2->where("TA_TAX_DT BETWEEN '$date_start' AND '$date_end' AND TA_STAT != 'X' AND mid(TA_TAX_NO,1,2) = 'WT'");
+        $db2->where("TA_TAX_DT BETWEEN '$date_start' AND '$date_end' AND VH_STAT != 'X' AND mid(TA_TAX_NO,1,2) = 'WT'");
+        $db2->join('gl_voc_head', 'gl_voc_head.VH_VOC_NO = gl_tax_adv.TA_VOC_NO', 'inner');
         $db2->order_by('TA_TAX_DT', 'DESC');
         $query = $db2->get('db_acc.gl_tax_adv');
         
         // print_r($db2);
+        // print_r($query);
         return $query->result_array();
         
     }
@@ -307,7 +309,8 @@ class Public_model extends CI_Model
         $db2 = $this->load->database("db_acc", true);
         $db2->select("TA_TAX_DT,TA_TAX_ID,TA_TAX_NM,TA_TAX_NO,DATE_FORMAT(TA_TAX_DT, '%Y') as dateformat");
         $db2->like('TA_TAX_ID', $paytaxno);
-        $db2->where("TA_TAX_DT BETWEEN '$date_start' AND '$date_end' AND TA_STAT != 'X' AND mid(TA_TAX_NO,1,2) = 'WT' AND TA_TAX_TYPE = 'ภ.ง.ด.1'");
+        $db2->where("TA_TAX_DT BETWEEN '$date_start' AND '$date_end' AND VH_STAT != 'X' AND mid(TA_TAX_NO,1,2) = 'WT' AND TA_TAX_TYPE = 'ภ.ง.ด.1'");
+        $db2->join('gl_voc_head', 'gl_voc_head.VH_VOC_NO = gl_tax_adv.TA_VOC_NO', 'inner');
         $db2->order_by('TA_TAX_DT', 'DESC');
         $query = $db2->get('db_acc.gl_tax_adv');
         
@@ -332,7 +335,7 @@ class Public_model extends CI_Model
         $db2->order_by('ddate', 'DESC');
         $query = $db2->get('payment.taxreceive');
         
-        // print_r($db2);
+        print_r($db2);
         return $query->result_array();
         
     }
@@ -446,17 +449,24 @@ class Public_model extends CI_Model
     }
     
 
-    public function getdetailpaytaxno_report($vchkey,$paytitle_rep, $payname_rep, $paysurname_rep, $docdate_rep, $bankref_rep)
+    public function getdetailpaytaxno_report($paytaxno,$paytitle_rep, $payname_rep, $paysurname_rep, $docdate_rep, $bankref_rep)
     {
-        if (!empty($docdate_rep) || !empty($paytitle_rep) || !empty($payname_rep) || !empty($paysurname_rep)) {
-            $fullname = $paytitle_rep.$payname_rep.$paysurname_rep;
+        if (!empty($docdate_rep) || !empty($paytitle_rep) || !empty($payname_rep) || !empty($paysurname_rep) || !empty($paytaxno) || !empty($bankref_rep)) {
+            // $fullname = $paytitle_rep.$payname_rep.$paysurname_rep;
             $db2 = $this->load->database("1202", true);
             $db2->select("vchmas.brnclmno,vchmas.title,vchmas.name,vchmas.surname,
 		    vchmas.paytype,vchmas.paydate,vchmas.vat,vchmas.bankref,
 		    vchmas.taxpay,vchmas.dabitall,vchmas.chqtotal,vchmas.pono,vchmas.paytaxno");
+            $db2->where("CASE
+            WHEN idcard = '$paytaxno' THEN TRUE 
+            WHEN paytaxno = '$paytaxno' THEN TRUE 
+            ELSE FALSE
+            END");
             $db2->where("paytype IN (1,2,4)");
             $db2->where(array('paydate' => $docdate_rep,'bankref' => $bankref_rep));
-            $db2->where('CONCAT(title,name,surname)', $fullname);
+            // $db2->where('CONCAT(title,name,surname)', $fullname);
+            // $db2->where('idcard', $paytaxno); 
+           
             $query = $db2->get('vchmas');
 
             // print_r($db2);
@@ -498,7 +508,7 @@ class Public_model extends CI_Model
             $db2 = $this->load->database("db_acc", true);
             $db2->select('TA_TAX_TYPE,TA_TAX_NO,TA_VOC_NO,TA_TAX_NM,TA_TAX_ID,TA_TAX_DESC,TA_TAX_RATE,TA_TAX_AMT,TA_TAX_VALUE,DATE_FORMAT(TA_TAX_DT,"%d/%m/%Y") as dateformat');
             $db2->order_by('TA_TAX_DT', 'desc');
-            $db2->where("TA_TAX_DT BETWEEN '$date_start' AND '$date_end' AND mid(TA_TAX_NO,1,2) = 'WT'");
+            $db2->where("TA_TAX_DT BETWEEN '$date_start' AND '$date_end' AND mid(TA_TAX_NO,1,2) = 'WT' AND TA_STAT != 'X'");
             $db2->where("TA_TAX_ID = '$taxid'");
             $query = $db2->get('gl_tax_adv');
             // print_r($db2);

@@ -90,7 +90,7 @@ $paytaxno_search = $this->session->userdata("paytaxno");
                                 </div>
                             </form>
 
-                            <?php if (!empty($paytaxno) || !empty($paytaxrecive)) {?>
+                            <?php if (!empty($paytaxno) || !empty($paytaxrecive) || !empty($paytaxrecive_old)) {?>
                             <div class="table-responsive">
                                 <?php if($paytaxrecive_year) {?>
                                 <div class="form-group col-md-5 offset-md-5 my-3">
@@ -226,7 +226,11 @@ $paytaxno_search = $this->session->userdata("paytaxno");
                                             }else if(!empty($paytaxno) && !empty($paytaxrecive)){
                                                 $taxid =  $item1['paytaxno'];
                                                 $name = $item1["paytitle"] . " " . $item1["payname"] . " " . $item1["paysurname"];
-                                            }else{
+                                            }else if(empty($paytaxno) && empty($paytaxrecive) && !empty($paytaxrecive_old)){
+                                                $taxid = $item['TA_TAX_ID'];
+                                                $name = $item["TA_TAX_NM"];
+                                            } 
+                                            else{
                                                 $taxid = "";
                                                 $name = "";
                                             }
@@ -236,7 +240,8 @@ $paytaxno_search = $this->session->userdata("paytaxno");
                                             <td><?php echo $taxid; ?></td>
                                             <td><?php echo $name; ?>
                                             <td style="color: blue;"><?php echo "รวมรายละเอียด" ?></td>
-                                            <td> <a href="#" class="send-sumreport zoom-hover" <?php   if(!empty($item1['fullname']) && empty($item['fullname'])){
+                                            <td> <a href="#" class="send-sumreport zoom-hover" 
+                                            <?php   if(!empty($item1['fullname']) && empty($item['fullname'])){
                                                             $fullname = $item1['fullname'];
                                                         }else if(empty($item1['fullname']) && !empty($item['fullname'])){
                                                             $fullname = $item['fullname'];

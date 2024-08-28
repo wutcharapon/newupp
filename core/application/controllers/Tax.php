@@ -93,34 +93,14 @@ class Tax extends MY_Controller
 
                         $data['paytaxno'] = $this->Public_model->getpaytaxno($paytaxno, $date_start, $date_end);
                         $data['paytaxrecive'] = $this->Public_model->gettaxreceive($paytaxno, $date_start, $date_end);
-                      
                         $data['paytaxrecive_old'] = $this->Public_model->gettaxreceive_old($paytaxno, $dateformat_start, $dateformat_end);
-                        // if (strtotime($date_start) <= strtotime('2024-02-29')) {
-                        //     if(strtotime($date_start) == strtotime('2024-02-29') && strtotime($date_end) == strtotime('2024-02-29')){
-                        //         $dateformat_start = "errdate";
-                        //         $dateformat_end = "errdate";
-                        //     }
-                        //     $data['paytaxrecive_old'] = $this->Public_model->gettaxreceive_old($paytaxno, $dateformat_start, $dateformat_end);
-                        // }
-
-                        // if (strtotime($date_start) > strtotime('2024-02-29')) {
-                        //     $data['paytaxrecive'] = $this->Public_model->gettaxreceive($paytaxno, $date_start, $date_end);
-                        // }
-
-                      
-                      
-
-                        // if (strtotime($date_start) > strtotime('2024-02-29')) {
-                        //     $data['paytaxrecive'] = $this->Public_model->gettaxreceive($paytaxno, $date_start, $date_end);
-                        // }else{
-                        //     $data['paytaxrecive_old'] = $this->Public_model->gettaxreceive_old($paytaxno, $dateformat_start, $dateformat_end);
-                        // }
-                      
+                    
+                        
                        
                        ////// ถ้าเกิดไม่มี หนังสือหัก ณ ที่จ่าย taxpay จะค้นหาจาก รายละเอียดการจ่าย vchmas
-                        if (empty($data['paytaxno']) && !empty($data['paytaxrecive'])) {
+                        if (empty($data['paytaxno']) && !empty($data['paytaxrecive']) ) {
                             $data['echoerr'] = "ไม่พบข้อมูลผู้เสียภาษี";
-                        }else if(empty($data['paytaxno']) && empty($data['paytaxrecive'])){
+                        }else if(empty($data['paytaxno']) && empty($data['paytaxrecive']) && empty($data['paytaxrecive_old'])){
                             $data['echoerr'] = "ไม่พบข้อมูลผู้เสียภาษี";
                         }
                          else {
@@ -167,7 +147,7 @@ class Tax extends MY_Controller
         
         $data = [
             'paytaxno_report' => $this->Public_model->getpaytaxno_report($taxkey, $paytaxno,$docdate),
-            'getdetailpaytaxno_report' => $this->Public_model->getdetailpaytaxno_report($vchkey,$paytitle,$payname,$paysurname,$docdate,$bankref),
+            'getdetailpaytaxno_report' => $this->Public_model->getdetailpaytaxno_report($paytaxno,$paytitle,$payname,$paysurname,$docdate,$bankref),
         ];
        
         $this->render('tax_report', [], $data);
