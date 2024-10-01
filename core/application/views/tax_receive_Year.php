@@ -30,15 +30,37 @@ if (!empty($gettaxreceive_report_year)) {
  
     foreach ($gettaxreceive_report_year as $row) {
         $docno = $row['TA_TAX_NO']; 
+        $voc = $row['TA_VOC_NO'];
         $fullname = $row['TA_TAX_NM']; 
         $address = $row['TA_TAX_ADDR'];
         $taxid = $row['TA_TAX_ID'];
-        $ddate = $row['dateformat'];
         $des = $row['TA_TAX_DESC'];
         $amt = decimalPart($row['TA_TAX_VALUE']);
         $tax = decimalPart($row['TA_TAX_AMT']);
         $thaiBath = thaiBath($row['TA_TAX_AMT']);
         $tax_type = $row['TA_TAX_TYPE'];
+        $rate = $row['TA_TAX_RATE'];
+
+       
+            
+            $parts = explode('-', $date_end);
+            $year_thai = $parts[0];
+            $year_ad = $year_thai+543; 
+            $month = $parts[1];
+            $day = $parts[2];
+
+            $ad_date = $day . "/" . $month . "/" . $year_ad;
+
+            $ddate = $ad_date;
+
+            $DESC1 = $row['DESC1'];
+            $DESC2 = $row['DESC2'];
+            $VALUE1 = decimalPart($row['VALUE1']);
+            $VALUE2 = decimalPart($row['VALUE2']);
+            $AMT1 = decimalPart($row['AMT1']);
+            $AMT2 = decimalPart($row['AMT2']);
+
+     
     }
 
 
@@ -92,7 +114,7 @@ if (!empty($gettaxreceive_report_year)) {
 
     // วาดวงกลม
     $pdf->Circle($x, $y, $radius, array('width' => 0.2, 'color' => array(0, 0, 0)));
-
+    
     $pdf->Cell(190, 10, "ฉบับที่ 1 (สำหรับผู้ถูกหักภาษี ณ ที่จ่าย ใช้แนบพร้อมกับแบบแสดงรายการภาษี)", 0, 1, 'L');
     $pdf->Cell(30, 5, "เล่มที่ ", 0, '', 'L');
     $pdf->SetFont('thsarabun', 'B', 14);
@@ -186,17 +208,31 @@ if (!empty($gettaxreceive_report_year)) {
     $pdf->SetFont('thsarabun', '', 12);
     $pdf->Cell(100, 5, "1. เงินเดือน ค่าจ้าง เบี้ยเลี้ยง โบนัส ฯลฯ ตามมาตรา 40(1) ", 0, '1', 'L');
 
-    if($des == 'ค่าส่งเสริมการขาย'){
-        $pdf->Cell(110, 5, "2. ค่าธรรมเนียม ค่านายหน้า ฯลฯ ตามมาตรา 40 (2) ", 0, '1', 'L');
+    // $pdf->Cell(110, 5, "2. ค่าธรรมเนียม ค่านายหน้า ฯลฯ ตามมาตรา 40 (2) ", 0, '0', 'L');
+    if($DESC1 == 'ค่านายหน้า'){
+        $pdf->WriteHTMLCell(110, 5, '', '', '<table><tr align="Left"><td>2. ค่าธรรมเนียม <u><b>' . $des . '</b></u> ฯลฯ ตามมาตรา 40 (2) </td></tr></table>', 0, '0');
+    
+  
+        $pdf->Cell(26, 5, "$ddate", 0, '0', 'C');
+    
+    
+    $pdf->Cell(20, 5, $VALUE1['integerPart'], 0, '0', 'R');
+    $pdf->Cell(8, 5, $VALUE1['DecimalPart'], 0, '0', 'L');
+    $pdf->Cell(19, 5, $AMT1['integerPart'], 0, '0', 'R');
+    $pdf->Cell(8, 5, $AMT1['DecimalPart'], 0, '1', 'L');
     }else{
         $pdf->WriteHTMLCell(110, 5, '', '', '<table><tr align="Left"><td>2. ค่าธรรมเนียม <u><b>' . $des . '</b></u> ฯลฯ ตามมาตรา 40 (2) </td></tr></table>', 0, '0');
+    
+  
         $pdf->Cell(26, 5, "$ddate", 0, '0', 'C');
-        $pdf->Cell(20, 5, $amt['integerPart'], 0, '0', 'R');
-        $pdf->Cell(8, 5, $amt['DecimalPart'], 0, '0', 'L');
-        $pdf->Cell(19, 5, $tax['integerPart'], 0, '0', 'R');
-        $pdf->Cell(8, 5, $tax['DecimalPart'], 0, '1', 'L');
+    
+    
+    $pdf->Cell(20, 5, $amt['integerPart'], 0, '0', 'R');
+    $pdf->Cell(8, 5, $amt['DecimalPart'], 0, '0', 'L');
+    $pdf->Cell(19, 5, $tax['integerPart'], 0, '0', 'R');
+    $pdf->Cell(8, 5, $tax['DecimalPart'], 0, '1', 'L');
     }
-   
+
 
     $pdf->Cell(100, 5, "3. ค่าแห่งลิขสิทธิ ฯลฯ ตามมาตรา 40 (3) ", 0, '1', 'L');
 
@@ -239,23 +275,22 @@ if (!empty($gettaxreceive_report_year)) {
 
     $pdf->Cell(100, 5, "5. การจ่ายเงินได้ที่ต้องหักภาษี ณ ที่จ่าย ตามคำสั่งกรมสรรพากร ที่ออกตาม", 0, '1', 'L');
     $pdf->Cell(2, 5, " ", 0, '0', 'L');
-    if($des == 'ค่าส่งเสริมการขาย'){
-    
-        $pdf->WriteHTMLCell(110, 5, '', '', '<table><tr align="Left"><td>มาตรา 3 เตรส (ระบุ)  <b>' . $des . '</b></td></tr></table>', 0, 0);
+    if($DESC2 == 'ค่าส่งเสริมการขาย'){
+        $pdf->WriteHTMLCell(110, 5, '', '', '<table><tr align="Left"><td>2. ค่าธรรมเนียม <u><b>' . $DESC2 . '</b></u> ฯลฯ ตามมาตรา 40 (2) </td></tr></table>', 0, '0');
         $pdf->Cell(26, 5, "$ddate", 0, '0', 'C');
-        $pdf->Cell(18, 5, $amt['integerPart'], 0, '0', 'R');
-        $pdf->Cell(11, 5, $amt['DecimalPart'], 0, '0', 'L');
-        $pdf->Cell(16, 5, $tax['integerPart'], 0, '0', 'R');
-        $pdf->Cell(11, 5, $tax['DecimalPart'], 0, '1', 'L');
+        $pdf->Cell(18, 5, $VALUE2['integerPart'], 0, '0', 'R');
+        $pdf->Cell(9, 5, $VALUE2['DecimalPart'], 0, '0', 'L');
+        $pdf->Cell(18, 5, $AMT2['integerPart'], 0, '0', 'R');
+        $pdf->Cell(9, 5, $AMT2['DecimalPart'], 0, '1', 'L');
+     
     }else{
-        $pdf->WriteHTMLCell(110, 5, '', '', '<table><tr align="Left"><td>มาตรา 3 เตรส (ระบุ) </td></tr></table>', 0, '1');
+        $pdf->Cell(110, 5, "2. ค่าธรรมเนียม ค่านายหน้า ฯลฯ ตามมาตรา 40 (2) ", 0, '1', 'L');
     }
-   
     $pdf->Cell(110, 5, "(เช่น รางวัล ส่วนลดหรือประโยชน์ใดๆ เนื่องจากการส่งเสริมการขาย รางวัล", 0, '1', 'L');
     $pdf->Cell(2, 5, "", 0, '0', 'L');
     $pdf->Cell(110, 5, "ในการประกวด การแข่งขัน การชิงโชค ค่าแสดงของนักแสดงสาธารณะ ค่าจ้างทำของ", 0, '1', 'L');
     $pdf->Cell(2, 5, "", 0, '0', 'L');
-  
+
     $pdf->Cell(100, 5, "ค่าโฆษณา ค่าเช่า ค่าขนส่ง ค่าบริการ ค่าเบี้ยประกันวินาศภัย ฯลฯ)", 0, '1', 'L');
 
     $pdf->Cell(100, 6, "", 0, '1', 'L');
@@ -269,7 +304,7 @@ if (!empty($gettaxreceive_report_year)) {
     $pdf->Cell(50, 6, "รวมเงินภาษีที่หักนำส่ง (ตัวอักษร)", 0, '0', 'L');
     $pdf->SetFont('thsarabun', 'B', 14);
     $pdf->Cell(120, 6, "$thaiBath", 0, '1', 'L', 1);
-    
+
     $pdf->SetFont('thsarabun', '', 12);
     $pdf->Cell(70, 8, "เลขที่นายจ้าง", 0, '0', 'L');
     $pdf->Cell(60, 8, "เลขที่บัตรประกันสังคมของผู้ถูกหักภาษี ณ ที่จ่าย", 0, '0', 'L');
@@ -302,7 +337,9 @@ if (!empty($gettaxreceive_report_year)) {
     $pdf->Cell(40, 6, "(  ) อื่นๆ (ให้ระบุ) .................", 0, '0', 'L');
     $pdf->Cell(5, 6, "", 0, '0', 'L');
     $pdf->Cell(60, 5, " ( นางสาว สุภาพร กันสุด )", 0, '1', 'C');
-    $pdf->Cell(145, 1, "$ddate  วันเดือนปี ที่ออกหนังสือรับรอง", 0, '1', 'R');
+
+        $pdf->Cell(145, 1, "$ddate  วันเดือนปี ที่ออกหนังสือรับรอง", 0, '1', 'R');
+    
 
     $pdf->Cell(190, 1, "", 0, '1', 'L');
     $pdf->SetFont('thsarabun', '', 10);

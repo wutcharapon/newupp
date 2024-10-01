@@ -27,7 +27,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			</div>
 
 			<div id="accordion">
-<!---------------------------------------------------->
+		<!---------------------------------------------------->
 		<?php
 			$num = 1;
 			foreach ($fncgroup as $rowgroup) {

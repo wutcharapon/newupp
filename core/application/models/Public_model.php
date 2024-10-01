@@ -307,7 +307,7 @@ class Public_model extends CI_Model
     public function gettaxreceiveYear($paytaxno, $date_start, $date_end)
     {
         $db2 = $this->load->database("db_acc", true);
-        $db2->select("TA_TAX_DT,TA_TAX_ID,TA_TAX_NM,TA_TAX_NO,DATE_FORMAT(TA_TAX_DT, '%Y') as dateformat");
+        $db2->select("TA_TAX_DT,TA_TAX_ID,TA_TAX_NM,TA_TAX_NO,DATE_FORMAT(DATE_ADD(TA_TAX_DT, INTERVAL 543 YEAR), '%Y') as dateformat");
         $db2->like('TA_TAX_ID', $paytaxno);
         $db2->where("TA_TAX_DT BETWEEN '$date_start' AND '$date_end' AND VH_STAT != 'X' AND mid(TA_TAX_NO,1,2) = 'WT' AND TA_TAX_TYPE = 'ภ.ง.ด.1'");
         $db2->join('gl_voc_head', 'gl_voc_head.VH_VOC_NO = gl_tax_adv.TA_VOC_NO', 'inner');
@@ -367,18 +367,11 @@ class Public_model extends CI_Model
     {
         if (!empty($taxid)) {
             $db2 = $this->load->database("db_acc", true);
-            $db2->select('TA_TAX_NO,
-            TA_TAX_NM,
-            TA_TAX_ADDR,
-            TA_TAX_ID,
-            TA_TAX_DESC,
-            SUM(TA_TAX_VALUE) as TA_TAX_VALUE,
-            TA_TAX_DESC,
-            SUM(TA_TAX_AMT) as TA_TAX_AMT,
-            TA_TAX_TYPE
-            ,DATE_FORMAT(TA_TAX_DT, "%Y") as dateformat');
+            $db2->select("TA_TAX_NO, TA_VOC_NO, SUBSTRING_INDEX(TA_TAX_NM, '/', 1) AS TA_TAX_NM, TA_TAX_ADDR, TA_TAX_ID, TA_TAX_DESC, SUM(TA_TAX_VALUE) as TA_TAX_VALUE, TA_TAX_DESC, SUM(TA_TAX_AMT) as TA_TAX_AMT, TA_TAX_TYPE , TA_TAX_RATE, DATE_FORMAT(TA_TAX_DT,'%d/%m/%Y') as dateformat ,MAX(CASE WHEN TA_TAX_DESC = 'ค่านายหน้า' THEN TA_TAX_DESC ELSE '' END) AS DESC1, MAX(CASE WHEN TA_TAX_DESC = 'ค่าส่งเสริมการขาย' THEN TA_TAX_DESC ELSE '' END) AS DESC2, MAX(CASE WHEN TA_TAX_DESC = 'ค่านายหน้า' THEN DATE_FORMAT(TA_TAX_DT,'%d/%m/%Y') ELSE '' END) AS DATE1, MAX(CASE WHEN TA_TAX_DESC = 'ค่าส่งเสริมการขาย' THEN DATE_FORMAT(TA_TAX_DT,'%d/%m/%Y') ELSE '' END) AS DATE2, MAX(CASE WHEN TA_TAX_DESC = 'ค่านายหน้า' THEN TA_TAX_NO ELSE '' END) AS TAX1, MAX(CASE WHEN TA_TAX_DESC = 'ค่าส่งเสริมการขาย' THEN TA_TAX_NO ELSE '' END) AS TAX2, MAX(CASE WHEN TA_TAX_DESC = 'ค่านายหน้า' THEN TA_VOC_NO ELSE '' END) AS VOC1, MAX(CASE WHEN TA_TAX_DESC = 'ค่าส่งเสริมการขาย' THEN TA_VOC_NO ELSE '' END) AS VOC2, MAX(CASE WHEN TA_TAX_DESC = 'ค่านายหน้า' THEN TA_TAX_RATE ELSE '' END) AS RATE1, MAX(CASE WHEN TA_TAX_DESC = 'ค่าส่งเสริมการขาย' THEN TA_TAX_RATE ELSE '' END) AS RATE2, MAX(CASE WHEN TA_TAX_DESC = 'ค่านายหน้า' THEN TA_TAX_TYPE ELSE '' END) AS TYPE1, MAX(CASE WHEN TA_TAX_DESC = 'ค่าส่งเสริมการขาย' THEN TA_TAX_TYPE ELSE '' END) AS TYPE2, SUM(CASE WHEN TA_TAX_DESC = 'ค่านายหน้า' THEN TA_TAX_VALUE ELSE 0 END) AS VALUE1, SUM(CASE WHEN TA_TAX_DESC = 'ค่าส่งเสริมการขาย' THEN TA_TAX_VALUE ELSE 0 END) AS VALUE2, SUM(CASE WHEN TA_TAX_DESC = 'ค่านายหน้า' THEN TA_TAX_AMT ELSE 0 END) AS AMT1, SUM(CASE WHEN TA_TAX_DESC = 'ค่าส่งเสริมการขาย' THEN TA_TAX_AMT ELSE 0 END) AS AMT2 ");
+            $db2->join('gl_voc_head', 'gl_voc_head.VH_VOC_NO = gl_tax_adv.TA_VOC_NO', 'inner');
             $db2->where(array('TA_TAX_ID' => $taxid));
-            $db2->where("TA_TAX_DT BETWEEN '$date_start' AND '$date_end' AND mid(TA_TAX_NO,1,2) = 'WT' AND TA_TAX_TYPE = 'ภ.ง.ด.1'");
+            $db2->group_by('TA_TAX_ID');
+            $db2->where("TA_TAX_DT BETWEEN '$date_start' AND '$date_end' AND mid(TA_TAX_NO,1,2) = 'WT' AND TA_TAX_TYPE = 'ภ.ง.ด.1' AND VH_STAT != 'X'");
             $query = $db2->get('gl_tax_adv');
 
             // print_r($db2);

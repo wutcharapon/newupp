@@ -662,5 +662,3 @@ function datethai($date)
     $thaiDate = date("d/m/{$thaiYear}", $timestamp);
     return $thaiDate;
 }
-
-

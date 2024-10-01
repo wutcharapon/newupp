@@ -115,7 +115,11 @@ $paytaxno_search = $this->session->userdata("paytaxno");
                                                 $date = $item["dateformat"];?>
                                             <?php endforeach;?>
                                             <td><b><?=$date?></b></td>
-                                            <td><?=$date_start?> ถึง <?=$date_end?></td>
+                                            <td>
+                                                <?= date('d/m/', strtotime($date_start)) . (date('Y', strtotime($date_start)) + 543) ?>
+                                                ถึง
+                                                <?= date('d/m/', strtotime($date_end)) . (date('Y', strtotime($date_end)) + 543) ?>
+                                            </td>
                                             <td><?php echo $taxid; ?></td>
                                             <td><?php echo $name; ?>
                                             <td style="color: green;"><?php echo "การเงินรับ" ?></td>
@@ -162,16 +166,17 @@ $paytaxno_search = $this->session->userdata("paytaxno");
                                             }  ?></td>
                                             <td><?php echo $item1["paytitle"] . " " . $item1["payname"] . " " . $item1["paysurname"]; ?>
                                             </td>
-                                            <td style="color: red;"><?php echo "การเงินจ่าย" ?></td>                                   
-                                            <td> <a href="#" class="check-tax zoom-hover" data-taxkey="<?=$item1['taxkey']?>"
+                                            <td style="color: red;"><?php echo "การเงินจ่าย" ?></td>
+                                            <td> <a href="#" class="check-tax zoom-hover"
+                                                    data-taxkey="<?=$item1['taxkey']?>"
                                                     data-vchkey="<?=$item1['vchkey']?>" data-paytaxno="<?=$paytax?>"
                                                     data-title="<?=$item1['title']?>" data-name="<?=$item1['name']?>"
                                                     data-surname="<?=$item1['surname']?>"
                                                     data-paydate="<?=$item1['paydate']?>"
                                                     data-bankref="<?=$item1['bankref']?>">
-                                                    <img  src="<?=base_url('assets/img/pdf.svg')?>" width="30" ></a>
+                                                    <img src="<?=base_url('assets/img/pdf.svg')?>" width="30"></a>
                                             </td>
-                                                                                 
+
                                         </tr>
                                         <?php endforeach;?>
                                         <?php } ?>
@@ -184,7 +189,8 @@ $paytaxno_search = $this->session->userdata("paytaxno");
                                             <td><?php echo $item["TA_TAX_NM"]; ?>
                                             </td>
                                             <td style="color: green;"><?php echo "การเงินรับ" ?></td>
-                                            <td> <a href="#" class="check-tax-in zoom-hover" data-taxid="<?=$item['TA_TAX_ID']?>"
+                                            <td> <a href="#" class="check-tax-in zoom-hover"
+                                                    data-taxid="<?=$item['TA_TAX_ID']?>"
                                                     data-docno="<?=$item['TA_TAX_NO']?>">
                                                     <img src="<?=base_url('assets/img/pdf.svg')?>" width="30"></a>
                                             </td>
@@ -195,14 +201,15 @@ $paytaxno_search = $this->session->userdata("paytaxno");
                                         <?php if(!empty($paytaxrecive)) {?>
                                         <?php foreach ($paytaxrecive as $row => $item): ?>
                                         <tr>
+
                                             <td><?php echo $numrow ++; ?></td>
-                                            <td><?php echo date('d/m/Y', strtotime(str_replace('/', '-',  $item['TA_TAX_DT']))); ?>
-                                            </td>
+                                                <td><?php $date = strtotime(str_replace('/', '-',  $item['TA_TAX_DT'])); echo date('d/m/', $date) . (date('Y', $date) + 543); ?></td>
                                             <td><?php echo $item['TA_TAX_ID']; ?></td>
                                             <td><?php echo $item["TA_TAX_NM"]; ?>
                                             </td>
                                             <td style="color: green;"><?php echo "การเงินรับ" ?></td>
-                                            <td> <a href="#" class="check-tax-in zoom-hover" data-taxid="<?=$item['TA_TAX_ID']?>"
+                                            <td> <a href="#" class="check-tax-in zoom-hover"
+                                                    data-taxid="<?=$item['TA_TAX_ID']?>"
                                                     data-docno="<?=$item['TA_TAX_NO']?>">
                                                     <img src="<?=base_url('assets/img/pdf.svg')?>" width="30"></a>
                                             </td>
@@ -240,8 +247,7 @@ $paytaxno_search = $this->session->userdata("paytaxno");
                                             <td><?php echo $taxid; ?></td>
                                             <td><?php echo $name; ?>
                                             <td style="color: blue;"><?php echo "รวมรายละเอียด" ?></td>
-                                            <td> <a href="#" class="send-sumreport zoom-hover" 
-                                            <?php   if(!empty($item1['fullname']) && empty($item['fullname'])){
+                                            <td> <a href="#" class="send-sumreport zoom-hover" <?php   if(!empty($item1['fullname']) && empty($item['fullname'])){
                                                             $fullname = $item1['fullname'];
                                                         }else if(empty($item1['fullname']) && !empty($item['fullname'])){
                                                             $fullname = $item['fullname'];

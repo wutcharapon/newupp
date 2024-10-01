@@ -375,6 +375,8 @@ $(function() {
 
     App.homeSlider('#home-slider')
     App.dealsSlider('#deals-slider')
+    // App.dealsSlider('#deals-slider2')
+    // App.newsSlider('#news-slider')
     App.colorOption()
 
 

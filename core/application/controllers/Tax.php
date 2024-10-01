@@ -76,19 +76,21 @@ class Tax extends MY_Controller
                         ////////////////////////////////////////
                         $startDate = new DateTime($date_start);
                         $endDate = new DateTime($date_end);
-                        if ($startDate->format('m-d') === '01-01' && $endDate->format('m-d') === '12-31' && $startDate->format('Y') === $endDate->format('Y')) {
-                        // $interval = $startDate->diff($endDate);
-                        // $data['interval'] =  $interval->days; // คำนวณจำนวนวัน
+
                         $result = $this->Public_model->gettaxreceiveYear($paytaxno, $date_start, $date_end);
-                            if($result){
-                                $data['paytaxrecive_year'] = $result;
-                            }else{
-                                $data['paytaxrecive_year'] = null;
-                            }
+                        $data['paytaxrecive_year'] = $result;
+                        // if ($startDate->format('m-d') === '01-01' && $endDate->format('m-d') === '12-31' && $startDate->format('Y') === $endDate->format('Y')) {
+                      
+                        // $result = $this->Public_model->gettaxreceiveYear($paytaxno, $date_start, $date_end);
+                        //     if($result){
+                        //         $data['paytaxrecive_year'] = $result;
+                        //     }else{
+                        //         $data['paytaxrecive_year'] = null;
+                        //     }
                         
-                        }else{
-                            $data['paytaxrecive_year'] = null;
-                        }
+                        // }else{
+                        //     $data['paytaxrecive_year'] = null;
+                        // }
                         ////////////////////////////////////////
 
                         $data['paytaxno'] = $this->Public_model->getpaytaxno($paytaxno, $date_start, $date_end);
